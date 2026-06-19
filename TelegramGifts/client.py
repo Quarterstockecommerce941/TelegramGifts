@@ -204,7 +204,7 @@ class TelegramGifts:
         return self.cache.save_image(url, filename, subfolder=ext)
 
     # --- Models and Attributes ---
-    def get_gift_prices_data(self, short_name: str) -> Optional[dict]:
+    def _get_gift_prices_data(self, short_name: str) -> Optional[dict]:
         """Fetches the prices.json for a specific gift models"""
         url = f"{self.BASE_RAW_URL}/models/{short_name}/prices.json"
         filename = f"models_{short_name}_prices.json"
@@ -233,7 +233,7 @@ class TelegramGifts:
         if not short_name:
             return None
             
-        config_data = self.get_gift_config_data(short_name)
+        config_data = self._get_gift_config_data(short_name)
         if not config_data:
             return None
             
@@ -294,7 +294,7 @@ class TelegramGifts:
         if not short_name:
             return None
             
-        prices = self.get_gift_prices_data(short_name)
+        prices = self._get_gift_prices_data(short_name)
         if not prices:
             return None
             

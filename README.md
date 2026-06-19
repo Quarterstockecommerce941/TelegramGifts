@@ -1,6 +1,6 @@
 # TelegramGifts
 
-> **A fast, offline-first Python library for fetching Telegram Gifts data, prices, and assets—no API key required.**
+> **Python SDK for Telegram Gifts API: Fetch real-time market prices (TGMrkt, GetGems, Fragment), upgraded NFT models, regular gifts, custom emoji IDs, and download WebP/TGS assets offline without a Telegram bot token.**
 
 [![PyPI version](https://img.shields.io/pypi/v/TelegramGifts.svg)](https://pypi.org/project/TelegramGifts/)
 [![GitHub stars](https://img.shields.io/github/stars/ssamy2/TelegramGifts.svg)](https://github.com/ssamy2/TelegramGifts/stargazers)
@@ -82,6 +82,11 @@ regular_gifts = gifts.get_regular_gifts()
 for gift in regular_gifts[:5]:
     print(f"{gift.full_name} | Supply: {gift.supply} | Floor: {gift.floor_price}")
 ```
+
+## Open Source Ecosystem
+This project is split into two specialized repositories to keep the library lightweight and fast:
+- **[TelegramGifts Library](https://github.com/ssamy2/TelegramGifts):** The core Python package source code.
+- **[TelegramGiftsAssests](https://github.com/ssamy2/TelegramGiftsAssests):** Our dedicated backend data warehouse serving up-to-date JSON prices and image assets.
 
 ## Contributing
 Contributions are welcome! Please feel free to submit a Pull Request to the repository. Before submitting, ensure that your code aligns with the existing architecture and passes all basic type checks.
