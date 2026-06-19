@@ -57,6 +57,9 @@ class TelegramGifts:
 
     # --- Single Gift Properties ---
     def _find_raw_gift_data(self, identifier: str) -> tuple[Optional[RegularGift], Optional[GiftDetail]]:
+        if not identifier:
+            return None, None
+        
         identifier_str = str(identifier).lower()
         regular_gift = None
         detail_gift = None
@@ -213,7 +216,7 @@ class TelegramGifts:
         except Exception:
             return None
 
-    def get_gift_config_data(self, short_name: str) -> Optional[list]:
+    def _get_gift_config_data(self, short_name: str) -> Optional[list]:
         """Fetches the config.json for a specific gift models"""
         url = f"{self.BASE_RAW_URL}/models/{short_name}/config.json"
         filename = f"models_{short_name}_config.json"

@@ -1,56 +1,68 @@
+import os
+import time
+import unittest
 from TelegramGifts import TelegramGifts
 
-def test_gifts():
-    print("Initializing TelegramGifts...")
-    # ttl_seconds=0 forces it to check HTTP headers immediately
-    gifts = TelegramGifts(ttl_seconds=0)
+class TestTelegramGiftsAPI(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        # Initialize the library once for all tests
+        cls.gifts = TelegramGifts(ttl_seconds=60)
+        
+    def test_public_methods_exist(self):
+        """Ensure core public methods are exposed"""
+        methods = [m for m in dir(self.gifts) if not m.startswith('_')]
+        self.assertIn("get_gift", methods)
+        self.assertIn("get_model_details", methods)
+        self.assertIn("get_attribute_price", methods)
+        self.assertIn("download_image", methods)
 
-    print("\n--- Upgraded Gifts ---")
-    upgraded = gifts.get_upgraded_gifts()
-    print(f"Total upgraded gifts: {len(upgraded)}")
-    if upgraded:
-        print(f"First upgraded gift: {upgraded[0].full_name} | TGMrkt Price: {upgraded[0].prices.tgmrkt_price_ton} TON")
+    def test_get_gift_happy_path(self):
+        """Test fetching a valid gift returns correct dictionary structure"""
+        info = self.gifts.get_gift("Artisan Brick")
+        self.assertIsNotNone(info)
+        self.assertEqual(info['short_name'], 'artisan_brick')
+        self.assertIn('prices', info)
+        self.assertIn('custom_emoji_id', info)
+        
+    def test_get_model_details(self):
+        """Test fetching specific model details returns enriched data"""
+        model = self.gifts.get_model_details("artisan_brick", "Pro Gamer")
+        self.assertIsNotNone(model)
+        self.assertEqual(model['name'], 'pro_gamer')
+        self.assertIn('price_ton', model)
+        self.assertIn('links', model)
+        
+    def test_get_attribute_price(self):
+        """Test fetching a specific attribute price returns a float"""
+        price = self.gifts.get_attribute_price("artisan_brick", "backdrops", "Black")
+        self.assertIsInstance(price, float)
+        self.assertGreater(price, 0)
+        
+    def test_edge_cases(self):
+        """Ensure invalid inputs return None safely without crashing"""
+        self.assertIsNone(self.gifts.get_gift(""))
+        self.assertIsNone(self.gifts.get_gift("FakeGift999"))
+        self.assertIsNone(self.gifts.get_gift(None))
+        
+    def test_caching_performance(self):
+        """Test that the cache prevents redundant network calls"""
+        start_t = time.time()
+        self.gifts.get_gift("Diamond Ring") # Fetch fresh data
+        t1 = time.time() - start_t
+        
+        start_t = time.time()
+        self.gifts.get_gift("Diamond Ring") # Fetch from cache
+        t2 = time.time() - start_t
+        
+        # Memory fetch should be extremely fast (near 0 seconds)
+        self.assertLess(t2, 0.05)
+        
+    def test_download_image(self):
+        """Test that downloading assets writes valid non-empty files to disk"""
+        dl_path = self.gifts.download_image("artisan_brick", "webp")
+        self.assertTrue(os.path.exists(dl_path))
+        self.assertGreater(os.path.getsize(dl_path), 0)
 
-    print("\n--- Regular Gifts ---")
-    regular = gifts.get_regular_gifts()
-    print(f"Total regular gifts: {len(regular)}")
-    if regular:
-        print(f"First regular gift: {regular[0].full_name} | Supply: {regular[0].supply}")
-
-    print("\n--- Specific Price ---")
-    price = gifts.get_upgraded_price("artisan_brick", "tgmrkt")
-    print(f"Artisan Brick TGMrkt Price: {price} TON")
-
-    print("\n--- Full Info By Identifier ---")
-    info = gifts.get_gift("Artisan Brick")
-    if info:
-        print(f"ID: {info['id']}")
-        print(f"Name: {info['full_name']} (Type: {info['type']})")
-        if "custom_emoji_id" in info:
-            print(f"Emoji ID: {info['custom_emoji_id']}")
-        print(f"Prices: {info['prices']}")
-        print(f"Links: {info['links']}")
-    
-    local_path_tgs = gifts.download_image("artisan_brick", "tgs")
-    print(f"Artisan Brick TGS Path: {local_path_tgs}")
-
-    print("\n--- Model & Backdrop Prices ---")
-    model_price = gifts.get_attribute_price("Artisan Brick", "models", "Diamond")
-    print(f"Artisan Brick (by name) - Diamond Model Price: {model_price}")
-    
-    backdrop_price = gifts.get_attribute_price("6005797617768858105", "backdrops", "Amber")
-    print(f"Artisan Brick (by ID) - Amber Backdrop Price: {backdrop_price}")
-
-    all_models = gifts.get_attribute_price("artisan_brick", "models")
-    if all_models:
-        print(f"Artisan Brick has {len(all_models)} models available.")
-
-    print("\n--- Model Images ---")
-    model_img_url = gifts.get_model_image_url("artisan_brick", "diamond", "tgs")
-    print(f"Diamond Model TGS URL: {model_img_url}")
-    
-    local_model = gifts.download_model_image("artisan_brick", "diamond", "tgs")
-    print(f"Diamond Model Local Path: {local_model}")
-
-if __name__ == "__main__":
-    test_gifts()
+if __name__ == '__main__':
+    unittest.main()
